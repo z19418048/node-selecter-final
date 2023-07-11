@@ -1,60 +1,34 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { Menu, Button } from 'tdesign-react';
-import {
-    ViewListIcon,
-    ServerIcon,
-    Edit1Icon,
-    RootListIcon,
-    CheckIcon,
-    UserIcon,
-    AppIcon,
-    LoginIcon,
-} from 'tdesign-icons-react';
+import { Menu } from 'tdesign-react';
 
-const { MenuGroup, MenuItem, SubMenu } = Menu;
-export default function NetworkSidebar(){
-    const [value, setValue] = useState('1');
-    const [collapsed, setCollapsed] = useState(false);
 
+const { MenuGroup, MenuItem } = Menu;
+export default function PointSidebar(){
+    const [networkValue, setNetworkValue] = useState('1');
+    const [netWorkSidebarList, setNetworkSidebarList] = useState([
+        "192.168.119.20",
+        "192.168.119.21",
+        "192.168.119.22",
+        "192.168.119.23",
+        "192.168.119.24",
+        "192.168.119.25",
+        "192.168.119.26",
+        "192.168.119.27",
+        "192.168.119.28",
+    ])
     return (
         <Menu
-            value={value}
-            onChange={(value) => setValue(value)}
-            collapsed={collapsed}
-            operations={
-                <Button variant="text" shape="square" icon={<ViewListIcon />} onClick={() => setCollapsed(!collapsed)} />
-            }
+            value={networkValue}
+            onChange={(value) => setNetworkValue(value)}
+            theme = "system"
         >
-            <MenuGroup title="主导航">
-                <MenuItem value="item1" icon={<AppIcon />}>
-                    仪表盘
-                </MenuItem>
-            </MenuGroup>
-            <MenuGroup title="组件">
-                <SubMenu title="列表项" value="2-1" icon={<ServerIcon />}>
-                    <MenuItem value="2-1-1">基础列表项</MenuItem>
-                    <MenuItem value="2-1-2">卡片列表项</MenuItem>
-                    <MenuItem value="2-1-3">筛选列表项</MenuItem>
-                    <MenuItem value="2-1-4">树状筛选列表项</MenuItem>
-                </SubMenu>
-                <MenuItem value="2-2" icon={<Edit1Icon />}>
-                    表单项
-                </MenuItem>
-                <MenuItem value="2-3" icon={<RootListIcon />}>
-                    详情页
-                </MenuItem>
-                <MenuItem value="2-4" icon={<CheckIcon />}>
-                    结果页
-                </MenuItem>
-            </MenuGroup>
-            <MenuGroup title="更多">
-                <MenuItem value="item3" icon={<UserIcon />}>
-                    个人页
-                </MenuItem>
-                <MenuItem value="item4" icon={<LoginIcon />}>
-                    登录页
-                </MenuItem>
+            <MenuGroup title="网络">
+                {netWorkSidebarList.map((networkList,networkListIndex) => (
+                    <MenuItem value={networkList}>
+                        {networkList}
+                    </MenuItem>
+                ))}
             </MenuGroup>
         </Menu>
     );

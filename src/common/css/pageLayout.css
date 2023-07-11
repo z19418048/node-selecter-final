@@ -1,0 +1,31 @@
+.check {
+    display: flex;
+    margin-top: 100px;
+}
+.tool {
+    display: flex;
+    margin-top: 100px;
+    overflow-x: scroll;
+    flex-wrap: nowrap; /* 禁止换行 */
+
+}
+.send {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 200px;
+}
+.Arrangement {
+    width: 460px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+    margin-bottom: 150px;
+}
+.Arrangement_tool {
+    display: flex;
+    flex-direction: row;
+}
+.toolStyle{
+    white-space: nowrap;
+}

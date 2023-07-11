@@ -1,60 +1,27 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { Menu, Button } from 'tdesign-react';
-import {
-    ViewListIcon,
-    ServerIcon,
-    Edit1Icon,
-    RootListIcon,
-    CheckIcon,
-    UserIcon,
-    AppIcon,
-    LoginIcon,
-} from 'tdesign-icons-react';
+import { Menu } from 'tdesign-react';
 
-const { MenuGroup, MenuItem, SubMenu } = Menu;
+
+const { MenuGroup, MenuItem } = Menu;
 export default function PointSidebar(){
-    const [value, setValue] = useState('1');
-    const [collapsed, setCollapsed] = useState(false);
-
+    const [pointValue, setPointValue] = useState('1');
+    const [pointListApi, setPointListApi] = useState([
+        1,2,3,4,5,6
+    ])
     return (
+
         <Menu
-            value={value}
-            onChange={(value) => setValue(value)}
-            collapsed={collapsed}
-            operations={
-                <Button variant="text" shape="square" icon={<ViewListIcon />} onClick={() => setCollapsed(!collapsed)} />
-            }
+            value={pointValue}
+            onChange={(value) => setPointValue(value)}
+            theme = "system"
         >
-            <MenuGroup title="主导航">
-                <MenuItem value="item1" icon={<AppIcon />}>
-                    仪表盘
+            <MenuGroup title="节点">
+            {pointListApi.map((pointList,pointListIndex) => (
+                <MenuItem value={pointList}>
+                    {pointList}
                 </MenuItem>
-            </MenuGroup>
-            <MenuGroup title="组件">
-                <SubMenu title="列表项" value="2-1" icon={<ServerIcon />}>
-                    <MenuItem value="2-1-1">基础列表项</MenuItem>
-                    <MenuItem value="2-1-2">卡片列表项</MenuItem>
-                    <MenuItem value="2-1-3">筛选列表项</MenuItem>
-                    <MenuItem value="2-1-4">树状筛选列表项</MenuItem>
-                </SubMenu>
-                <MenuItem value="2-2" icon={<Edit1Icon />}>
-                    表单项
-                </MenuItem>
-                <MenuItem value="2-3" icon={<RootListIcon />}>
-                    详情页
-                </MenuItem>
-                <MenuItem value="2-4" icon={<CheckIcon />}>
-                    结果页
-                </MenuItem>
-            </MenuGroup>
-            <MenuGroup title="更多">
-                <MenuItem value="item3" icon={<UserIcon />}>
-                    个人页
-                </MenuItem>
-                <MenuItem value="item4" icon={<LoginIcon />}>
-                    登录页
-                </MenuItem>
+        ))}
             </MenuGroup>
         </Menu>
     );

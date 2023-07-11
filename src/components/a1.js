@@ -1,44 +1,38 @@
-import React,{ useRef } from "react";
-import TextField from "@material-ui/core/TextField";
-import "./styles.css";
+import React, { useState } from 'react';
 
-const inputs = [
-    {
-        id: "fName",label: "First Name"
-    },{
-        id: "lName",label: "Last Name"
-    },{
-        id: "gender",label: "Gender"
-    },{
-        id: "address",label: "Address"
-    }
-];
+const MyComponent = () => {
+    const [inputValue, setInputValue] = useState([[''], ['']]);
 
-export default function App() {
-    const myRefs = useRef([]);
+    const handleInputChange = (rowIndex, colIndex, value) => {
+        const updatedInputValue = [...inputValue];
+        updatedInputValue[rowIndex][colIndex] = value;
+        setInputValue(updatedInputValue);
+    };
 
-    const handleKeyUp = (e,targetElem) => {
-        if (e.key === "Enter" && targetElem) {
-            targetElem.focus();
-        }
+    const clearInputValue = () => {
+        const updatedInputValue = inputValue.map(row => row.map(() => ''));
+        setInputValue(updatedInputValue);
     };
 
     return (
         <div>
-            {inputs.map((ipt,i) => (
-                <TextField
-                    onKeyUp={(e) =>
-                        handleKeyUp(e,myRefs.current[i === inputs.length - 1 ? 0 : i + 1])
-                    }
-                    inputRef={(el) => (myRefs.current[i] = el)}
-                    id={ipt.id}
-                    fullWidth
-                    style={{ marginBottom: 20 }}
-                    label={ipt.label}
-                    variant="outlined"
-                    key={ipt.id}
-                />
+            <button onClick={clearInputValue}>Clear Values</button>
+            {inputValue.map((row, rowIndex) => (
+                <div key={`row-\${rowIndex}`}>
+                    {row.map((col, colIndex) => (
+                        <input
+                            key={`col-\${colIndex}`}
+                            type="text"
+                            value={col}
+                            onChange={(event) =>
+                                handleInputChange(rowIndex, colIndex, event.target.value)
+                            }
+                        />
+                    ))}
+                </div>
             ))}
         </div>
     );
-}
+};
+
+export default MyComponent;

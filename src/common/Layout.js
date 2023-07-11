@@ -1,8 +1,9 @@
 import NetworkSidebar from "./NetworkSidebar";
 import PointSidebar from "./PointSidebar";
 import PageLayout from "./PageLayout";
+import InputGenerator from "./InputGenerator";
 
-const layout = () => {
+export const Layout = () => {
   return(
       <div className="page">
           <div className="component">
@@ -11,11 +12,9 @@ const layout = () => {
           <div className="component">
               <PointSidebar></PointSidebar>
           </div>
-          <div className="component">
+          <div className="component ">
               <PageLayout></PageLayout>
           </div>
       </div>
   );
 }
-
-export default layout

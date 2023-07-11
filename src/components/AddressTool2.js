@@ -1,5 +1,5 @@
 import "./css/addressTool.css"
-import {useEffect, useRef, useState} from "react";
+import { useRef, useState} from "react";
 
 export const AddressTool = () => {
     const [columnValue,setColumnValue] = useState(0)
@@ -18,15 +18,19 @@ export const AddressTool = () => {
             ],
         ]
     )
-    const ref = useRef(columnValue[columnValue][rowValue].id)
-    // useEffect(() => {
-    //     document
-    //         .getElementById(`${inputList[columnValue][rowValue].id}`)
-    //         .focus()
-    // })
+    const itemsRef = useRef(null);
+
+    const getMap = () => {
+        if (!itemsRef.current) {
+            // 首次运行时初始化 Map。
+            itemsRef.current = new Map();
+        }
+        return itemsRef.current;
+    }
+
     //新增行方法
     const addRowValue = (columnValue, rowValue) => {
-        inputList[columnValue].map((el) => (el.disable = true))
+        // inputList[columnValue].map((el) => (el.disable = true))
         inputList[columnValue].push({
             id: "column" + columnValue + "row" + rowValue,
             disable: false,
@@ -41,31 +45,27 @@ export const AddressTool = () => {
     const addColumnValue = (columnValue, rowValue) => {
         let getInputListValue = inputList[columnValue];
         if (getInputListValue === undefined) {
-            inputList.push([
-                {
-                    id: "column" + columnValue + "row" + rowValue,
-                    disable: false,
-                    input: "",
-                    outSideStyle: "",
-                    class: "inputStyle",
-                    tips: "请输入数字",
-                },
-            ]);
+            inputList.push([{
+                id: "column" + columnValue + "row" + rowValue,
+                disable: false,
+                input: "",
+                outSideStyle: "",
+                class: "inputStyle",
+                tips: "请输入数字",
+            }]);
         } else {
-            getInputListValue.map((el) => (el.disable = true));
-            inputList.push([
-                {
-                    id: "column" + columnValue + "row" + rowValue,
-                    disable: false,
-                    input: "",
-                    outSideStyle: "",
-                    class: "inputStyle",
-                    tips: "请输入数字",
-                },
-            ]);
+            // getInputListValue.map((el) => (el.disable = true));
+            inputList.push([{
+                id: "column" + columnValue + "row" + rowValue,
+                disable: false,
+                input: "",
+                outSideStyle: "",
+                class: "inputStyle",
+                tips: "请输入数字",
+            }]);
         }
     };
-    const deleteValue = (columnValue,rowValue) => {
+    const deleteValue = (columnValue, rowValue) => {
         if (rowValue === 0 && columnValue === 0) {
             setColumnValue(0)
             setRowValue(0)
@@ -76,14 +76,12 @@ export const AddressTool = () => {
             inputList.splice(columnValue)
             setColumnValue(columnValue => columnValue -1)
             setRowValue( inputList[columnValue - 1].length - 1)
-            inputList[columnValue - 1][inputList[columnValue - 1].length - 1].disable = false
-
+            // inputList[columnValue - 1][inputList[columnValue - 1].length - 1].disable = false
          } else {
             // 平常情况
             inputList[columnValue].pop()
             setRowValue(rowValue => rowValue - 1)
-            inputList[columnValue][rowValue - 1].disable = false
-
+            // inputList[columnValue][rowValue - 1].disable = false
         }
     }
     // 按键事件
@@ -92,35 +90,43 @@ export const AddressTool = () => {
             setRowValue(rowValue => rowValue + 1)
             addRowValue(columnValue, rowValue + 1)
             setInputList(inputList => inputList)
-            console.log(inputList)
+            console.log(itemsRef.current)
+            itemsRef.current.get(`${inputList[columnValue][rowValue].id}`).focus()
         }
     }
     const enter = (event) => {
         if (event.key === 'Enter'){
-            const inputListLength = inputList[columnValue].length - 1;
-            inputList[columnValue][rowValue].disable = true;
+            // const inputListLength = inputList[columnValue].length - 1;
+            // inputList[columnValue][rowValue].disable = true;
             if (rowValue !== 0) {
                 setRowValue(0)
             }
             setColumnValue(columnValue => columnValue + 1)
-            addColumnValue(columnValue + 1, rowValue);
+            addColumnValue(columnValue + 1, 0);
             setInputList(inputList => inputList)
+            itemsRef.current.get(`${inputList[columnValue][rowValue].id}`).focus()
 
         }
     }
     const shift =  (event) => {
-        if (event.key === 'Shift'){
+        if (event.key === 'Shift' ){
+            const deleteInputValue = inputList.slice()
+            deleteInputValue[columnValue][rowValue].input = ""
+            setInputList(deleteInputValue)
+        }
+        if (event.key === 'Delete' || event.key === 'Backspace' && event.shiftKey ){
             deleteValue(columnValue,rowValue)
             setInputList(inputList => inputList)
+            itemsRef.current.get(`${inputList[columnValue][rowValue].id}`).focus()
         }
     }
+
 
     const handleKeyDown = (event) => {
         tab(event)
         enter(event)
         shift(event)
     }
-
     const handleChange = (event, rowIndex, colIndex) => {
         const updatedInputList = [...inputList];
         updatedInputList[rowIndex][colIndex].input = event.target.value;
@@ -142,6 +148,14 @@ export const AddressTool = () => {
                             <input
                                 key={`${index}-${liIndex}`}
                                 id={li.id}
+                                ref={(node) => {
+                                    const map = getMap();
+                                    if (node) {
+                                        map.set(li.id, node);
+                                    } else {
+                                        map.delete(li.id);
+                                    }
+                                }}
                                 type="text"
                                 className={li.class}
                                 onChange={(e) => handleChange(e,index,liIndex)}
@@ -149,8 +163,6 @@ export const AddressTool = () => {
                                 disabled={li.disable}
                                 value={li.input}
                                 placeholder={li.tips}
-                                autoFocus={index === inputList.length - 1
-                                    && liIndex === outsideList.length - 1}
                             />
                         </div>
                     ))}

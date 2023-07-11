@@ -2,6 +2,7 @@
 import React from 'react';
 import {Button, Radio, Space} from 'tdesign-react';
 import "./css/pageLayout.css"
+import {AddressTool} from "../components/AddressTool2";
 export default function PageLayout(){
     return(
         <div>
@@ -19,8 +20,8 @@ export default function PageLayout(){
                     </Space>
                 </Space>
             </div>
-            <div className="Arrangement">
-
+            <div className="toolStyle">
+                <AddressTool></AddressTool>
             </div>
             <div className="Arrangement">
                 <Button

@@ -1,0 +1,28 @@
+/*div*/
+.outsideStyle{
+    display: flex;
+    flex-direction: row;
+}
+.insideStyle{
+    display: flex;
+}
+/*输入框*/
+.inputStyle{
+    width: 130px;
+    height: 30px;
+}
+.inputStyle:hover{
+    box-shadow: 0 0 5px rgba(0, 128, 255, 0.5);
+    border:none;
+}
+.inputStyle:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 128, 255, 0.5), 0 0 5px rgba(0, 128, 255, 0.5) inset;
+    border: 2px solid rgba(0, 128, 255, 0.5);
+}
+
+.fixBar {
+    width: 22px;
+    height: 30px;
+    text-align: center;
+}
