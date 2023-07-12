@@ -1,7 +1,6 @@
 import NetworkSidebar from "./NetworkSidebar";
 import PointSidebar from "./PointSidebar";
 import PageLayout from "./PageLayout";
-import InputGenerator from "./InputGenerator";
 
 export const Layout = () => {
   return(
