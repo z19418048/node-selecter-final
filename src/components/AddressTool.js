@@ -2,8 +2,8 @@ import "./css/addressTool.css"
 import { useRef, useState} from "react";
 
 export const AddressTool = () => {
-    const [columnValue,setColumnValue] = useState(0)
     const [rowValue,setRowValue] = useState(0)
+    const [columnValue,setColumnValue] = useState(0)
     const [inputList,setInputList] = useState(
         [
             [
@@ -18,10 +18,10 @@ export const AddressTool = () => {
             ],
         ]
     )
-    const [nextColumnValue,setNextColumnValue] = useState(0)
     const [nextRowValue,setNextRowValue] = useState(0)
+    const [nextColumnValue,setNextColumnValue] = useState(0)
     const [length,setLength] = useState(0)
-    const [newRowValue,setNewRowValue] = useState(0)
+    const [newColumnValue,setNewColumnValue] = useState(0)
     const itemsRef = useRef(null)
     const getMap = () => {
         if (!itemsRef.current) {
@@ -32,10 +32,10 @@ export const AddressTool = () => {
     }
 
     //新增行方法
-    const addRowValue = (columnValue, rowValue) => {
-        // inputList[columnValue].map((el) => (el.disable = true))
-            inputList[columnValue].push({
-                id: "column" + columnValue + "row" + rowValue,
+    const addcolumnValue = (rowValue, columnValue) => {
+        // inputList[rowValue].map((el) => (el.disable = true))
+            inputList[rowValue].push({
+                id: "column" + rowValue + "row" + columnValue,
                 disable: false,
                 input: "",
                 outSideStyle: "",
@@ -45,11 +45,11 @@ export const AddressTool = () => {
     }
 
 // 新增列的方法
-    const addColumnValue = (columnValue, rowValue) => {
-        let getInputListValue = inputList[columnValue];
+    const addrowValue = (rowValue, columnValue) => {
+        let getInputListValue = inputList[rowValue];
         if (getInputListValue === undefined) {
             inputList.push([{
-                id: "column" + columnValue + "row" + rowValue,
+                id: "column" + rowValue + "row" + columnValue,
                 disable: false,
                 input: "",
                 outSideStyle: "",
@@ -59,7 +59,7 @@ export const AddressTool = () => {
         } else {
             // getInputListValue.map((el) => (el.disable = true));
             inputList.push([{
-                id: "column" + columnValue + "row" + rowValue,
+                id: "column" + rowValue + "row" + columnValue,
                 disable: false,
                 input: "",
                 outSideStyle: "",
@@ -69,26 +69,26 @@ export const AddressTool = () => {
         }
     };
     // 删除最后一个数据
-    const deleteValue = (columnValue, rowValue) => {
-        if (rowValue === 0 && columnValue === 0) {
-            setColumnValue(0)
+    const deleteValue = (rowValue, columnValue) => {
+        if (columnValue === 0 && rowValue === 0) {
             setRowValue(0)
+            setColumnValue(0)
             handleFocus(0,0)
             // 初始化数据
             // 保证第一行第一列的元素不会被删除
-        }else if (rowValue === 0){
+        }else if (columnValue === 0){
             // 一般情况下且当元素只留下一个的时候
-            inputList.splice(columnValue)
-            setColumnValue(columnValue => columnValue -1)
-            setRowValue( inputList[columnValue - 1].length - 1)
-            handleFocus(columnValue - 1,inputList[columnValue - 1].length - 1)
-            // inputList[columnValue - 1][inputList[columnValue - 1].length - 1].disable = false
+            inputList.splice(rowValue)
+            setRowValue(rowValue => rowValue -1)
+            setColumnValue( inputList[rowValue - 1].length - 1)
+            handleFocus(rowValue - 1,inputList[rowValue - 1].length - 1)
+            // inputList[rowValue - 1][inputList[rowValue - 1].length - 1].disable = false
          } else {
             // 平常情况
-            inputList[columnValue].pop()
-            setRowValue(rowValue => rowValue - 1)
-            handleFocus(columnValue,rowValue - 1)
-            // inputList[columnValue][rowValue - 1].disable = false
+            inputList[rowValue].pop()
+            setColumnValue(columnValue => columnValue - 1)
+            handleFocus(rowValue,columnValue - 1)
+            // inputList[rowValue][columnValue - 1].disable = false
         }
     }
     //删除某一整列数据
@@ -102,55 +102,55 @@ export const AddressTool = () => {
     // 按键事件
     const tab = (event) => {
         if (event.key === 'Tab'){
-            setRowValue(rowValue => rowValue + 1)
-            addRowValue(columnValue, rowValue + 1)
+            setColumnValue(columnValue => columnValue + 1)
+            addcolumnValue(rowValue, columnValue + 1)
             setInputList(inputList => inputList)
-            handleFocus(columnValue,rowValue + 1)
+            handleFocus(rowValue,columnValue + 1)
         }
     }
     const enter = (event) => {
         if (event.key === 'Enter'){
-            // const inputListLength = inputList[columnValue].length - 1;
-            // inputList[columnValue][rowValue].disable = true;
-            if (rowValue !== 0) {
-                setRowValue(0)
+            // const inputListLength = inputList[rowValue].length - 1;
+            // inputList[rowValue][columnValue].disable = true;
+            if (columnValue !== 0) {
+                setColumnValue(0)
             }
-            setColumnValue(columnValue => columnValue + 1)
-            addColumnValue(columnValue + 1, 0);
+            setRowValue(rowValue => rowValue + 1)
+            addrowValue(rowValue + 1, 0);
             setInputList(inputList => inputList)
-            handleFocus(columnValue + 1,0)
+            handleFocus(rowValue + 1,0)
         }
     }
     const shift =  (event,id) => {
         if (event.key === 'Shift' ){
             const deleteInputValue = inputList.slice()
-            const newColumnValue = parseInt(id[6])
-            const newRowValue = parseInt(id[10])
-            deleteInputValue[newColumnValue][newRowValue].input = ""
-            // handleClearInput(columnValue,rowValue)
+            const newrowValue = parseInt(id[6])
+            const newColumnValue = parseInt(id[10])
+            deleteInputValue[newrowValue][newColumnValue].input = ""
+            // handleClearInput(rowValue,columnValue)
             setInputList(deleteInputValue)
         }
         if (event.key === 'Backspace' && event.shiftKey ){
-            deleteValue(columnValue,rowValue)
+            deleteValue(rowValue,columnValue)
             setInputList(inputList => inputList)
         }
         if (event.key === 'Delete' && event.shiftKey ){
-            if (columnValue === 0 && rowValue !== 0){
+            if (rowValue === 0 && columnValue !== 0){
                 const updatedInputList = [...inputList];
                 const length = -updatedInputList[0].length + 1
                 updatedInputList[0].splice(length)
                 setInputList(updatedInputList)
-                setColumnValue(0)
                 setRowValue(0)
+                setColumnValue(0)
                 handleFocus(0,0)
             }
-            else if (columnValue > 0){
+            else if (rowValue > 0){
                 const updatedInputList = [...inputList];
-                const result = removeRow(updatedInputList,columnValue)
-                setColumnValue(columnValue => columnValue -1)
-                setRowValue(rowValue => inputList[columnValue - 1].length - 1)
+                const result = removeRow(updatedInputList,rowValue)
+                setRowValue(rowValue => rowValue -1)
+                setColumnValue(columnValue => inputList[rowValue - 1].length - 1)
                 setInputList(result)
-                handleFocus(columnValue -1,inputList[columnValue - 1].length - 1)
+                handleFocus(rowValue -1,inputList[rowValue - 1].length - 1)
             }
         }
     }
@@ -159,34 +159,34 @@ export const AddressTool = () => {
         if (parseInt(id[6]) - 1 >= 0){
             if (event.key === "ArrowUp") {
                 //上一列的值
-                const prevColumnValue = parseInt(id[6]) - 1
-                // console.log(prevColumnValue)
+                const prevRowValue = parseInt(id[6]) - 1
+                // console.log(prevRowValue)
 
                 //当前行的值
-                const prevRowValue = parseInt(id[10])
-                setNextColumnValue(prevColumnValue)
+                const prevColumnValue = parseInt(id[10])
                 setNextRowValue(prevRowValue)
-                // console.log(prevRowValue)
-
-                //上一列的最后一个元素
+                setNextColumnValue(prevColumnValue)
                 // console.log(prevColumnValue)
 
-                const newRowValue = inputList[prevColumnValue].length - 1
+                //上一列的最后一个元素
+                // console.log(prevRowValue)
 
-                // console.log(newRowValue)
+                const newColumnValue = inputList[prevRowValue].length - 1
+
+                // console.log(newColumnValue)
 
                 //该行的元素比上一个元素大情况下
-                // console.log(prevRowValue)
-                // console.log(newRowValue)
+                // console.log(prevColumnValue)
+                // console.log(newColumnValue)
 
-                if (prevColumnValue === 0 && prevRowValue > newRowValue){
-                    handleFocus(prevColumnValue,newRowValue)
-                }else if (prevColumnValue > 0 && prevRowValue > newRowValue){
-                    console.log(prevColumnValue)
-                    console.log(newRowValue)
-                    handleFocus(prevColumnValue,newRowValue )
+                if (prevRowValue === 0 && prevColumnValue > newColumnValue){
+                    handleFocus(prevRowValue,newColumnValue)
+                }else if (prevRowValue > 0 && prevColumnValue > newColumnValue){
+                    console.log(prevRowValue)
+                    console.log(newColumnValue)
+                    handleFocus(prevRowValue,newColumnValue )
                 }else {
-                    handleFocus(prevColumnValue,prevRowValue)
+                    handleFocus(prevRowValue,prevColumnValue)
                 }
             }
         }
@@ -194,31 +194,31 @@ export const AddressTool = () => {
 
     // 下键进行focus
     const down = (event,id) => {
-        if (parseInt(id[6]) + 1 <= columnValue){
+        if (parseInt(id[6]) + 1 <= rowValue){
             if (event.key === "ArrowDown"){
                 // 下一列的值
-                const prevColumnValue = parseInt(id[6]) + 1
+                const prevRowValue = parseInt(id[6]) + 1
                 // 当前行的值
-                const prevRowValue = parseInt(id[10])
-                setNextColumnValue(prevColumnValue)
+                const prevColumnValue = parseInt(id[10])
                 setNextRowValue(prevRowValue)
+                setNextColumnValue(prevColumnValue)
 
                 //下一列的长度
-                // console.log(prevColumnValue)
-                const newRowValue = inputList[prevColumnValue].length - 1
-                // console.log(inputList[prevColumnValue].length)
+                // console.log(prevRowValue)
+                const newColumnValue = inputList[prevRowValue].length - 1
+                // console.log(inputList[prevRowValue].length)
 
                 //最后一列
-                // console.log(columnValue)
+                // console.log(rowValue)
                 //最后一列长度
-                // console.log(inputList[columnValue].length)
-                if (prevColumnValue - 1 !== columnValue && prevRowValue > newRowValue){
-                    console.log(prevColumnValue,newRowValue)
-                    handleFocus(prevColumnValue,newRowValue)
-                }else if (prevColumnValue === columnValue){
-                    handleFocus(columnValue,prevRowValue)
+                // console.log(inputList[rowValue].length)
+                if (prevRowValue - 1 !== rowValue && prevColumnValue > newColumnValue){
+                    console.log(prevRowValue,newColumnValue)
+                    handleFocus(prevRowValue,newColumnValue)
+                }else if (prevRowValue === rowValue){
+                    handleFocus(rowValue,prevColumnValue)
                 }else {
-                    handleFocus(prevColumnValue,prevRowValue)
+                    handleFocus(prevRowValue,prevColumnValue)
                 }
             }
         }
@@ -226,38 +226,38 @@ export const AddressTool = () => {
     // 左键进行focus
     const left = (event,id) => {
         if (event.key === "ArrowLeft"){
-            const prevColumnValue = parseInt(id[6])
-            const prevRowValue = parseInt(id[10]) - 1
-            setNextColumnValue(prevColumnValue)
+            const prevRowValue = parseInt(id[6])
+            const prevColumnValue = parseInt(id[10]) - 1
             setNextRowValue(prevRowValue)
-            if (prevRowValue >= 0){
-                handleFocus(prevColumnValue,prevRowValue)
+            setNextColumnValue(prevColumnValue)
+            if (prevColumnValue >= 0){
+                handleFocus(prevRowValue,prevColumnValue)
             }
         }
     }
     // 右键进行focus
     const right = (event,id) => {
         if (event.key === "ArrowRight"){
-            const prevColumnValue = parseInt(id[6])
-            const prevRowValue = parseInt(id[10]) + 1
-            setNextColumnValue(prevColumnValue)
+            const prevRowValue = parseInt(id[6])
+            const prevColumnValue = parseInt(id[10]) + 1
             setNextRowValue(prevRowValue)
-            const length = inputList[prevColumnValue].length - 1
-            if (prevRowValue <= length){
-                handleFocus(prevColumnValue,prevRowValue)
+            setNextColumnValue(prevColumnValue)
+            const length = inputList[prevRowValue].length - 1
+            if (prevColumnValue <= length){
+                handleFocus(prevRowValue,prevColumnValue)
             }
         }
     }
     // focus聚焦
-    const handleFocus = (columnValue,rowValue) => {
-        const id = `${inputList[columnValue][rowValue].id}`
+    const handleFocus = (rowValue,columnValue) => {
+        const id = `${inputList[rowValue][columnValue].id}`
         setTimeout(() => {
             itemsRef.current.get(id).focus()
         },0)
     }
     // 清除当前行的数据
-    const handleClearInput = (columnValue,rowValue) => {
-        const id = `${inputList[columnValue][rowValue].id}`
+    const handleClearInput = (rowValue,columnValue) => {
+        const id = `${inputList[rowValue][columnValue].id}`
         setTimeout(() => {
             itemsRef.current.get(id).input = ""
         },0)
