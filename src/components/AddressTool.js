@@ -34,6 +34,17 @@ export const AddressTool = () => {
         const numbers = text.match(regex);
         return numbers
     }
+    const handleInitId = (rowValue) => {
+        //当前行的长度
+        const rowLength = inputList.length
+        for (let i = 0; i < rowLength - rowValue; i++) {
+            const columnLength = inputList[rowValue + i].length - 1
+            for (let j = 0; j<= columnLength; j++){
+                inputList[rowValue + i][j].id =
+                    `row${rowValue + i}column${j}`
+            }
+        }
+    }
 
         //TODO
         //新增行方法
@@ -61,35 +72,64 @@ export const AddressTool = () => {
             }]
             inputList.splice(rowValue, 0, addValue)
         };
+        //TODO
         // 删除最后一个数据
         const deleteValue = (rowValue, columnValue) => {
-            if (rowValue === 0 && columnValue === 0) {
+            if (rowValue === 0 && columnValue === 0 && inputList.length - 1 === 0 ){
                 setRowValue(0)
                 setColumnValue(0)
                 handleFocus(0, 0)
                 // 初始化数据
                 // 保证第一行第一列的元素不会被删除
-            } else if (columnValue === 0) {
+            }else if (rowValue === 0 && columnValue === 0 && inputList.length - 1 !== 0){
+                //TODO
+                inputList.splice(rowValue,1)
+                handleInitId(rowValue)
+                setRowValue(rowValue => rowValue + 1)
+                handleFocus(rowValue,columnValue)
+            }
+            else if (columnValue === 0 && inputList[rowValue].length - 1 === 0) {
                 // 一般情况下且当元素只留下一个的时候
                 inputList.splice(rowValue,1)
                 setRowValue(rowValue => rowValue - 1)
                 setColumnValue(inputList[rowValue - 1].length - 1)
                 handleFocus(rowValue - 1, inputList[rowValue - 1].length - 1)
-            } else {
+                //总共行的值
+                const length = inputList.length
+                //当前行的值
+                if (rowValue  !== length){
+                    for (let i = 0; i < length - rowValue; i++) {
+                        const columnLength = inputList[rowValue + i].length - 1
+                        for (let j = 0; j<= columnLength; j++){
+                            inputList[rowValue + i][j].id =
+                                `row${rowValue + i}column${j}`
+                        }
+                    }
+                }
+            }else if (columnValue === 0 && inputList[rowValue].length - 1 !== 0){
+                inputList[rowValue].pop()
+                setRowValue(rowValue => rowValue - 1)
+                setColumnValue(inputList[rowValue - 1].length - 1)
+                handleFocus(rowValue, columnValue )
+                //总共行的值
+                const length = inputList.length
+                // console.log(rowValue)
+
+            }
+            else {
                 // 平常情况
                 inputList[rowValue].pop()
                 setColumnValue(columnValue => columnValue - 1)
                 handleFocus(rowValue, columnValue - 1)
             }
         }
-        //删除某一整列数据
+        //删除一整行的数据
         const removeRow = (arr, rowIndex) => {
             // 创建一个新的二维数组，用于存储不包含要删除的子数组
             const newArr = arr.filter((_, index) => index !== rowIndex);
             // 返回新的二维数组
             return newArr;
         }
-        //TODO
         // 按键事件
         const tab = (event, id) => {
             if (event.key === 'Tab') {
@@ -106,10 +146,8 @@ export const AddressTool = () => {
                 }
                 setInputList(inputList => inputList)
                 handleFocus(rowValueLength, columnValueLength + 1)
-                console.log(inputList)
             }
         }
-        //TODO
         const enter = (event, id) => {
             if (event.key === 'Enter') {
                 const rowValueLength = parseInt(handleNumber(id)[0])
@@ -121,9 +159,12 @@ export const AddressTool = () => {
                 setRowValue(rowValue => rowValue + 1)
                 addColumnValue(rowValueLength + 1, 0, id);
                 if (rowValueLength + 1 !== length) {
-                    for (let j = 0; j <= length - rowValueLength; j++) {
-                        inputList[rowValueLength + j][0].id =
-                            `row${rowValueLength + j}column${0}`
+                    for (let i = 0; i <= length - rowValueLength; i++) {
+                        const columnLength = inputList[rowValueLength + i].length - 1
+                        for (let j = 0; j<= columnLength; j++){
+                            inputList[rowValueLength + i][j].id =
+                                `row${rowValueLength + i}column${j}`
+                        }
                     }
                 }
                 handleFocus(rowValueLength + 1, 0)
@@ -147,10 +188,30 @@ export const AddressTool = () => {
                 setInputList(inputList => inputList)
                 console.log(inputList)
             }
+            //TODO
             if (event.key === 'Delete' && event.shiftKey) {
+                //当前行
                 const newRowValue = parseInt(handleNumber(id)[0])
+                //当前列
                 const newColumnValue = parseInt(handleNumber(id)[1])
-                if (newRowValue === 0 && newColumnValue !== 0) {
+                if (newRowValue === 0  && inputList.length - 1 !== 0){
+                    const updatedInputList = [...inputList];
+                    inputList.splice(newRowValue,1)
+                    const result = removeRow(updatedInputList, newRowValue)
+                    const length = inputList.length
+                    setRowValue(rowValue => rowValue +  1)
+                    setColumnValue(columnValue => inputList[newRowValue].length - 1)
+                    setInputList(result)
+                    for (let i = 0; i < length - newRowValue; i++) {
+                        const columnLength = inputList[newRowValue + i].length - 1
+                        for (let j = 0; j<= columnLength; j++){
+                            inputList[newRowValue + i][j].id =
+                                `row${newRowValue + i}column${j}`
+                        }
+                    }
+                    handleFocus(newRowValue, inputList[newRowValue].length - 1)
+                }
+                else if (newRowValue === 0 && newColumnValue !== 0 && inputList.length - 1 === 0) {
                     const updatedInputList = [...inputList];
                     const length = -updatedInputList[0].length + 1
                     updatedInputList[0].splice(length)
@@ -160,10 +221,19 @@ export const AddressTool = () => {
                     handleFocus(0, 0)
                 } else if (newRowValue > 0) {
                     const updatedInputList = [...inputList];
+                    inputList.splice(newRowValue,1)
                     const result = removeRow(updatedInputList, newRowValue)
+                    const length = inputList.length
                     setRowValue(rowValue => rowValue - 1)
                     setColumnValue(columnValue => inputList[newRowValue - 1].length - 1)
                     setInputList(result)
+                    for (let i = 0; i < length - newRowValue; i++) {
+                        const columnLength = inputList[newRowValue + i].length - 1
+                        for (let j = 0; j<= columnLength; j++){
+                            inputList[newRowValue + i][j].id =
+                                `row${newRowValue + i}column${j}`
+                        }
+                    }
                     handleFocus(newRowValue - 1, inputList[newRowValue - 1].length - 1)
                 }
                 console.log(inputList)
