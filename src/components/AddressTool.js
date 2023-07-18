@@ -45,8 +45,13 @@ export const AddressTool = () => {
             }
         }
     }
-
-        //TODO
+    //删除一整行的数据
+    const removeRow = (arr, rowIndex) => {
+        // 创建一个新的二维数组，用于存储不包含要删除的子数组
+        const newArr = arr.filter((_, index) => index !== rowIndex);
+        // 返回新的二维数组
+        return newArr;
+    }
         //新增行方法
         const addRowValue = (rowValue, columnValue, id) => {
             const addValue = {
@@ -60,7 +65,7 @@ export const AddressTool = () => {
             inputList[rowValue].splice(columnValue, 0, addValue)
         }
 
-// 新增列的方法
+        // 新增列的方法
         const addColumnValue = (rowValue, columnValue, id) => {
             const addValue = [{
                 id: "row" + rowValue + "column" + columnValue,
@@ -72,32 +77,65 @@ export const AddressTool = () => {
             }]
             inputList.splice(rowValue, 0, addValue)
         };
-        //TODO
+
         // 删除最后一个数据
         const deleteValue = (rowValue, columnValue) => {
-            if (rowValue === 0 && columnValue === 0 && inputList.length - 1 === 0 ){
+            // 所有行只剩下一行的情况下，保证第一个数据不会删除
+            if (rowValue === 0 && columnValue === 0
+                && inputList.length -1 === 0 && inputList[0].length - 1 === 0 ){
                 setRowValue(0)
                 setColumnValue(0)
                 handleFocus(0, 0)
                 // 初始化数据
                 // 保证第一行第一列的元素不会被删除
-            }else if (rowValue === 0 && columnValue === 0 && inputList.length - 1 !== 0){
-                //TODO
-                inputList.splice(rowValue,1)
+            }
+            else if (rowValue === 0 && columnValue === 0
+                && inputList.length -1 === 0 && inputList[0].length - 1 !== 0 ){
+                const updateInputList = [...inputList]
+                updateInputList[rowValue].pop()
+                setInputList(updateInputList)
+                setRowValue(rowValue => rowValue)
+                setColumnValue(inputList[rowValue].length - 1)
+                handleFocus(rowValue, columnValue )
                 handleInitId(rowValue)
-                setRowValue(rowValue => rowValue + 1)
+            }
+            else if (rowValue === 0 && columnValue === 0
+                && inputList.length - 1 !== 0 && inputList[0].length - 1 !== 0){
+                inputList[rowValue].pop()
+                setRowValue(rowValue => rowValue)
+                setColumnValue(inputList[rowValue].length - 1)
+                handleFocus(rowValue, columnValue)
+                handleInitId(rowValue)
+                // inputList[rowValue].splice(columnValue,1)
+                // setRowValue(rowValue => rowValue)
+                // setColumnValue(columnValue => columnValue)
+                // handleInitId(rowValue)
+                // handleFocus(rowValue,columnValue)
+            }
+            else if (rowValue === 0 && columnValue === 0
+                && inputList.length - 1 !== 0 && inputList[0].length - 1 === 0){
+                const updatedInputList = [...inputList];
+                inputList.splice(rowValue,1)
+                const result = removeRow(updatedInputList, rowValue)
+                setRowValue(rowValue => rowValue )
+                setColumnValue(columnValue => inputList[rowValue].length - 1)
+                setInputList(result)
+                handleInitId(rowValue)
                 handleFocus(rowValue,columnValue)
             }
             else if (columnValue === 0 && inputList[rowValue].length - 1 === 0) {
                 // 一般情况下且当元素只留下一个的时候
-                inputList.splice(rowValue,1)
+                const updatedInputList = [...inputList];
+                updatedInputList.splice(rowValue,1)
+                setInputList(updatedInputList)
                 setRowValue(rowValue => rowValue - 1)
                 setColumnValue(inputList[rowValue - 1].length - 1)
                 handleFocus(rowValue - 1, inputList[rowValue - 1].length - 1)
                 //总共行的值
                 const length = inputList.length
+                handleInitId(rowValue)
                 //当前行的值
-                if (rowValue  !== length){
+/*                if (rowValue  !== length){
                     for (let i = 0; i < length - rowValue; i++) {
                         const columnLength = inputList[rowValue + i].length - 1
                         for (let j = 0; j<= columnLength; j++){
@@ -105,31 +143,29 @@ export const AddressTool = () => {
                                 `row${rowValue + i}column${j}`
                         }
                     }
-                }
-            }else if (columnValue === 0 && inputList[rowValue].length - 1 !== 0){
-                inputList[rowValue].pop()
-                setRowValue(rowValue => rowValue - 1)
-                setColumnValue(inputList[rowValue - 1].length - 1)
-                handleFocus(rowValue, columnValue )
-                //总共行的值
-                const length = inputList.length
-                // console.log(rowValue)
+                }*/
 
-            }
-            else {
+            }else if (columnValue === 0 && inputList[rowValue].length - 1 !== 0){
+                const updateInputList = [...inputList]
+                updateInputList[rowValue].pop()
+                setInputList(updateInputList)
+                setRowValue(rowValue => rowValue)
+                setColumnValue(inputList[rowValue].length - 1)
+                handleFocus(rowValue, columnValue )
+                handleInitId(rowValue)
+
+            } else {
                 // 平常情况
-                inputList[rowValue].pop()
+                const updateInputList = [...inputList]
+                updateInputList[rowValue].pop()
+                setInputList(updateInputList)
+                setRowValue(rowValue => rowValue)
                 setColumnValue(columnValue => columnValue - 1)
                 handleFocus(rowValue, columnValue - 1)
+                handleInitId(rowValue)
             }
         }
-        //删除一整行的数据
-        const removeRow = (arr, rowIndex) => {
-            // 创建一个新的二维数组，用于存储不包含要删除的子数组
-            const newArr = arr.filter((_, index) => index !== rowIndex);
-            // 返回新的二维数组
-            return newArr;
-        }
+
         // 按键事件
         const tab = (event, id) => {
             if (event.key === 'Tab') {
@@ -180,15 +216,16 @@ export const AddressTool = () => {
                 // handleClearInput(rowValue,columnValue)
                 setInputList(deleteInputValue)
             }
-            //TODO
+
             if (event.key === 'Backspace' && event.shiftKey) {
                 const newRowValue = parseInt(handleNumber(id)[0])
                 const newColumnValue = parseInt(handleNumber(id)[1])
+                //TODO
                 deleteValue(newRowValue, newColumnValue)
                 setInputList(inputList => inputList)
                 console.log(inputList)
             }
-            //TODO
+
             if (event.key === 'Delete' && event.shiftKey) {
                 //当前行
                 const newRowValue = parseInt(handleNumber(id)[0])
@@ -278,16 +315,15 @@ export const AddressTool = () => {
                 }
             }
         }
-
         // 下键进行focus
         const down = (event, id) => {
             const rowValueLength = parseInt(handleNumber(id)[0])
             const columnValueLength = parseInt(handleNumber(id)[1])
             if (rowValueLength + 1 <= rowValue) {
                 if (event.key === "ArrowDown") {
-                    // 下一列的值
+                    // 下一行的值
                     const prevRowValue = rowValueLength + 1
-                    // 当前行的值
+                    // 当前列的值
                     const prevColumnValue = columnValueLength
                     setNextRowValue(prevRowValue)
                     setNextColumnValue(prevColumnValue)
