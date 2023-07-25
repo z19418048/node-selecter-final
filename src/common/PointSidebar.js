@@ -10,7 +10,6 @@ export default function PointSidebar(){
         1,2,3,4,5,6
     ])
     return (
-
         <Menu
             value={pointValue}
             onChange={(value) => setPointValue(value)}

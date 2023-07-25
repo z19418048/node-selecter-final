@@ -1,0 +1,58 @@
+/*div*/
+.statusBar{
+    display: flex;
+    /*border-bottom:2px solid rgba(0, 128, 255, 0.5);*/
+}
+.insideStyle{
+    display: flex;
+
+}
+.spanBox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 35.2px;
+    margin-right: 10px;
+}
+span{
+    font-family: "Times New Roman";
+}
+/*输入框*/
+.inputStyle{
+    width: 130px;
+    height: 30px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+.inputStyle:hover{
+    box-shadow: 0 0 5px rgba(0, 128, 255, 0.5);
+    border:2px solid rgba(0, 128, 255, 0.2);
+}
+.inputStyle:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 128, 255, 0.5), 0 0 5px rgba(0, 128, 255, 0.5) inset;
+    border: 2px solid rgba(0, 128, 255, 0.5);
+}
+.changeInputStyle{
+    width: 130px;
+    height: 30px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+.changeInputStyle:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 0, 94, 0.93), 0 0 5px rgba(255, 0, 94, 0.93) inset;
+    border: 2px solid rgba(255, 0, 94, 0.93);
+}
+.tips{
+    display: flex;
+    color: red;
+    font-family: Arial;
+}
+.fixBar {
+    width: 22px;
+    height: 30px;
+    text-align: center;
+}
+
+

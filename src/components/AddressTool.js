@@ -407,7 +407,8 @@ export const AddressTool = () => {
                     <div className="outsideStyle" key={index}>
                         <div className="insideStyle">
                             {outsideList.map((li, liIndex) => (
-                                <div key={liIndex}>
+                                <div key={liIndex} >
+                                    <span></span>
                                     <input
                                         type="text"
                                         className="fixBar"
